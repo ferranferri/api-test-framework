@@ -3,13 +3,35 @@
  */
 package api.test.framework.app;
 
+
 import org.junit.jupiter.api.Test;
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.io.IOException;
+import java.net.URL;
+import java.net.HttpURLConnection;
+
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class MessageUtilsTest {
-    @Test void testGetMessage() {
-        assertEquals("Hello World!", "Hello World!");
+    @Test void testGetMessage() throws IOException {
+        URL obj = new URL("https://official-joke-api.appspot.com/random_joke");
+        HttpURLConnection con = (HttpURLConnection) obj.openConnection();
+        con.setRequestMethod("GET");
+        con.setRequestProperty("User-Agent", "Mozilla/5.0");
+        int responseCode = con.getResponseCode();
+        BufferedReader in = new BufferedReader(new InputStreamReader(con.getInputStream()));
+        String inputLine;
+        StringBuffer response = new StringBuffer();
+
+        while ((inputLine = in.readLine()) != null) {
+            response.append(inputLine);
+        }
+        in.close();
+        System.out.println("GET Response Code :: " + responseCode);
+        System.out.println(response);
+        assertEquals(200, responseCode);
     }
     @Test void testGetMessage2() {
         assertEquals("Hello World!", "Hello World!");
